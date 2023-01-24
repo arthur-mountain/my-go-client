@@ -1,13 +1,20 @@
 'use client';
 import { useState } from "react";
-// import { POSTv1ForgetPassword } from "../../services/Home/home.js";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { POSTv1ForgetPassword } from "../../services/System/index.js";
 
 function PageComponent() {
+  const router = useRouter();
   const [username, setUserName] = useState("");
 
-  const handleSubmit = () => {
-    // TODO: forget password api
+  const handleSubmit = async () => {
+    try {
+      await POSTv1ForgetPassword({ name: username });
+      alert("please receive email");
+      router.push("/");
+    } catch (error) {
+      console.log("error: ", error);
+    }
   }
 
   return (
@@ -24,7 +31,7 @@ function PageComponent() {
           onChange={e => setUserName(e.target.value)} />
       </div>
 
-      <button type="button" onClick={handleSubmit} className="mb-4 text-sm font-medium text-blue-600 dark:text-blue-500">
+      <button type="button" onClick={handleSubmit} className="mb-4 text-sm font-medium text-blue-600 dark:text-blue-500" disabled={!username}>
         送出
       </button>
     </div>

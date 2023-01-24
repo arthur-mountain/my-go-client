@@ -6,32 +6,46 @@ import Link from "next/link";
 import "../styles/reset.css";
 import "./globals.css";
 
+const WhiteList = ["/", "/create-user", "/forget-password"];
+const pages = [
+  { title: "TodoList", href: "/todo-list" },
+  { title: "Activity", href: "/activity" },
+];
+
 function RootLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
   const [stateErrMsg, setStateErrMsg] = useState('');
+  const isShowChildren = !stateErrMsg || WhiteList.indexOf(pathname) > -1;
 
-  const pages = [
-    { title: "TodoList", href: "/todo-list" },
-    { title: "Activity", href: "/activity" },
-  ];
+  const handleLogout = () => {
+    // TODO: api to logout?
+    window.localStorage.removeItem("token");
+    router.replace("/");
+  };
 
   useEffect(() => {
+    const isWhiteList = WhiteList.indexOf(pathname) > -1;
     const token = JSON.parse(window.localStorage.getItem("token"));
+
+    // Login page has token
     if (pathname === '/' && token) {
       setStateErrMsg("");
       router.replace("/home");
       return;
     }
 
-    if (pathname !== '/' && !token) {
+    // White list page without token
+    if (isWhiteList) return;
+
+    if (!isWhiteList && !token){
       setStateErrMsg("empty token");
       setTimeout(() => {
+        setStateErrMsg("");
         router.replace("/");
       }, 1000);
-    }
-  }, [pathname])
-
+    };
+  }, [pathname]);
 
   return (
     <html>
@@ -49,6 +63,13 @@ function RootLayout({ children }) {
                 TEST
               </span>
               <img className="p-1 w-10 h-10 rounded-full ring-2 ring-gray-300 dark:ring-gray-500 mr-6" src="https://images.unsplash.com/photo-1542189736-67ca49d5342b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDY3fDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=800&q=60" alt="avatar" />
+              <button
+                type="button"
+                className="text-white"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
             </div>
           </div>
         </nav>
@@ -88,7 +109,7 @@ function RootLayout({ children }) {
               <div className="text-red-900 text-center text-7xl mb-12">
                 {stateErrMsg}
               </div>
-              {!stateErrMsg && children}
+              {isShowChildren && children}
             </section>
             <footer className="p-4 bg-white sm:p-6 dark:bg-gray-900">
               <div className="md:flex md:justify-between">

@@ -1,15 +1,32 @@
 'use client';
 import { useState } from "react";
-// import { POSTv1CreateUser } from "../../services/Home/home.js";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { POSTv1CreateUser } from "../../services/System/index.js";
 
 function PageComponent() {
+  const router = useRouter();
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const isDisabled = !username && !password && !confirmPassword;
 
-  const handleSubmit = () => {
-    // TODO: create user api
+  const handleSubmit = async () => {
+    if (password !== confirmPassword) {
+      alert("confirm password is not match password");
+      return;
+    }
+
+    try {
+      await POSTv1CreateUser({
+        name: username,
+        password,
+        confirm_password: confirmPassword
+      });
+
+      router.push("/");
+    } catch (error) {
+      console.log("error: ", error);
+    }
   }
 
   return (
@@ -31,11 +48,11 @@ function PageComponent() {
           onChange={e => setPassword(e.target.value)} />
       </div>
       <div className="mb-6">
-        <label for="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+        <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
         <input type="password" id="confirm_password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="•••••••••" required value={confirmPassword}
           onChange={e => setConfirmPassword(e.target.value)} />
       </div>
-      <button type="button" onClick={handleSubmit} className="mb-4 text-sm font-medium text-blue-600 dark:text-blue-500">
+      <button type="button" onClick={handleSubmit} className="mb-4 text-sm font-medium text-blue-600 dark:text-blue-500" disabled={isDisabled}>
         創建
       </button>
     </div>
