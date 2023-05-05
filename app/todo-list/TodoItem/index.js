@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { FaTrash } from "react-icons/fa";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const TodoItem = ({ todo, handleCheck }) => {
+const TodoItem = ({ todo, handleCheck, handleDelete }) => {
   const { id, title, description, is_completed } = todo;
   const router = useRouter();
   const actions = [
@@ -21,18 +21,7 @@ const TodoItem = ({ todo, handleCheck }) => {
       onClick: async (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        try {
-          const url = `${process.env.NEXT_PUBLIC_BASE_URL}/todo/${id}`;
-          await fetch(url, {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-            }
-          });
-        } catch (error) {
-          console.log("Delete error: ", error);
-        }
+        handleDelete(id);
       },
       Component: <FaTrash color="lightblue" fontSize="1rem" />
     },

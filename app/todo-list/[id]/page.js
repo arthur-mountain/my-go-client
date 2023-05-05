@@ -14,7 +14,7 @@ function PageComponent({ params }) {
     const fetchTodo = async (id) => {
       if (!id) return;
 
-      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/todo/${id}`
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/todos/${id}`
       const res = await fetch(url, {
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
@@ -36,7 +36,7 @@ function PageComponent({ params }) {
     if (!stateTitle) return;
 
     try {
-      const url = isEdit ? `${process.env.NEXT_PUBLIC_BASE_URL}/todo/${params.id}` : `${process.env.NEXT_PUBLIC_BASE_URL}/todo/create`;
+      const url = isEdit ? `${process.env.NEXT_PUBLIC_BASE_URL}/todos/${params.id}` : `${process.env.NEXT_PUBLIC_BASE_URL}/todos/create`;
       const method = isEdit ? "PUT" : "POST";
 
       await fetch(url, {

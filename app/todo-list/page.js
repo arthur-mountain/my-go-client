@@ -3,7 +3,7 @@ import { useEffect, useState, useId } from 'react';
 import Link from 'next/link';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { GETv1TodoList, PUTv1TodoCompleted, } from "../../services/Todo/index.js";
+import { GETv1TodoList, PUTv1TodoCompleted, DELETEv1TodoById } from "../../services/Todo/index.js";
 import TodoItem from "./TodoItem/index";
 
 const animatedComponents = makeAnimated();
@@ -20,10 +20,18 @@ function PageComponent() {
   const handleCheck = async (id) => {
     try {
       await PUTv1TodoCompleted(id);
-
       setTodos(prevTodos => prevTodos.map(todo => todo.id === id ? { ...todo, is_completed: true } : todo));
     } catch (error) {
       alert(`check error: ${error}`);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await DELETEv1TodoById(id);
+      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+    } catch (error) {
+      alert(`Delete error: ${error}`);
     }
   };
 
@@ -115,7 +123,7 @@ function PageComponent() {
         <ul>
           {todos.length > 0 ? (
             todos.map(todo => (
-              <TodoItem key={`__todo-item__${todo.id}`} todo={todo} handleCheck={handleCheck} />
+              <TodoItem key={`__todo-item__${todo.id}`} todo={todo} handleCheck={handleCheck} handleDelete={handleDelete} />
             ))
           ) : (
             <li>

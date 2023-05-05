@@ -13,10 +13,10 @@ function PageComponent() {
     e.stopPropagation();
 
     try {
-      const resp = await POSTv1Login({ name: username, password });
+      const resp = await POSTv1Login({ email: username, password });
 
-      if (resp.token) {
-        localStorage.setItem("token", JSON.stringify(resp.token));
+      if (resp.items.token) {
+        localStorage.setItem("token", JSON.stringify(resp.items.token));
         router.push("/home");
       }
     } catch (error) {
