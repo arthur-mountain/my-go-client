@@ -1,12 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer, useContext, createContext } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const WhiteList = ["/", "/create-user", "/forget-password"];
+
+const initialStore = {
+  error: { message: "" }
+}
+const AuthContext = createContext(null);
+const useAuthCtx = () => useContext(AuthContext);
+
+const reducer = (store, action) => {
+  switch (action.type) {
+    case "create-user": {
+
+    }
+    default:
+      return store
+  }
+}
 
 const useClientAuth = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [stateErrMsg, setStateErrMsg] = useState('');
+  // const [store, dispatch] = useReducer(reducer, initialStore)
   const isShowChildren = !stateErrMsg || WhiteList.indexOf(pathname) > -1;
 
   const handleLogout = () => {
