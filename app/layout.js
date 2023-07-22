@@ -1,6 +1,6 @@
 import Layout from "../components/Layout/Layout";
-import "../styles/reset.css";
-import "./globals.css";
+import "@/styles/reset.css";
+import "@/styles/global.css";
 
 function RootLayout({ children }) {
   return (
