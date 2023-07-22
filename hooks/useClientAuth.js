@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const WhiteList = ["/", "/create-user", "/forget-password"];
+
 const useClientAuth = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,7 +39,7 @@ const useClientAuth = () => {
   }, [pathname]);
 
   return {
-    state: {
+    store: {
       stateErrMsg,
       isShowChildren
     },
