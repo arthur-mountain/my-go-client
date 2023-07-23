@@ -5,8 +5,8 @@ import { POSTv1Login } from "@/services/System";
 
 function PageComponent() {
   const router = useRouter();
-  const [username, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUserName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleLogin = async (e: React.MouseEvent) => {
     e.preventDefault();

@@ -3,7 +3,11 @@ import { useEffect, useState, useId } from 'react';
 import Link from 'next/link';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { GETv1TodoList, PUTv1TodoCompleted, DELETEv1TodoById } from "@/services/Todo/index.js";
+import {
+  GETv1TodoList,
+  PUTv1TodoCompleted,
+  DELETEv1TodoById
+} from "@/services/Todo";
 import TodoItem from "./TodoItem/index";
 
 const animatedComponents = makeAnimated();

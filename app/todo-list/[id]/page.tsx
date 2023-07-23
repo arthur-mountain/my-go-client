@@ -29,7 +29,7 @@ function PageComponent({ params }: Props) {
     if (!stateTitle) return;
 
     try {
-      const data = JSON.stringify({ title: stateTitle, description: stateDesc, });
+      const data = { title: stateTitle, description: stateDesc }
 
       if (isEdit) {
         params.id && await PUTv1TodoUpdate(params.id, data);

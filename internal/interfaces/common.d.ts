@@ -5,4 +5,8 @@ declare namespace Common {
     totalPage: number;
     totalCount?: number;
   }
+
+  type ErrorType = {
+    message: string;
+  }
 }

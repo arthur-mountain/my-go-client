@@ -2,7 +2,12 @@ import { Fragment } from 'react'
 import Link from "next/link";
 import Icon from "@/components/Icon";
 
-const Breadcrumb = ({ breadcrumbs = [], separator = '/' }) => {
+type Props = {
+  breadcrumbs: string[];
+  separator?: string;
+}
+
+const Breadcrumb = ({ breadcrumbs = [], separator = '/' }: Props) => {
   if (!breadcrumbs.length) return null
 
   return (
