@@ -3,21 +3,21 @@ import { useEffect, useState, useId } from 'react';
 import Link from 'next/link';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { GETv1TodoList, PUTv1TodoCompleted, DELETEv1TodoById } from "../../services/Todo/index.js";
+import { GETv1TodoList, PUTv1TodoCompleted, DELETEv1TodoById } from "@/services/Todo/index.js";
 import TodoItem from "./TodoItem/index";
 
 const animatedComponents = makeAnimated();
 
 function PageComponent() {
   const uniqueId = useId();
-  const [todos, setTodos] = useState([]);
-  const [pagination, setPagination] = useState({
+  const [todos, setTodos] = useState<Todo.Schema[]>([]);
+  const [pagination, setPagination] = useState<Common.Pagination>({
     currentPage: 1,
     perPage: 15,
     totalPage: 0,
   });
 
-  const handleCheck = async (id) => {
+  const handleCheck = async (id: number) => {
     try {
       await PUTv1TodoCompleted(id);
       setTodos(prevTodos => prevTodos.map(todo => todo.id === id ? { ...todo, is_completed: true } : todo));
@@ -26,7 +26,7 @@ function PageComponent() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     try {
       await DELETEv1TodoById(id);
       setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
@@ -35,7 +35,7 @@ function PageComponent() {
     }
   };
 
-  const handleChangePage = async (page) => {
+  const handleChangePage = async (page: number) => {
     try {
       const resp = await GETv1TodoList("?current_page=" + page);
       const items = resp.items;
@@ -56,7 +56,7 @@ function PageComponent() {
 
   useEffect(() => {
     try {
-      async function fetchData() {
+      const fetchData = async () => {
         const resp = await GETv1TodoList();
         const items = resp.items;
 

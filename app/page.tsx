@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { POSTv1Login } from "../services/System/index.js";
+import { POSTv1Login } from "@/services/System";
 
 function PageComponent() {
   const router = useRouter();
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 

@@ -3,13 +3,19 @@ import { useRouter } from "next/navigation";
 import { FaTrash } from "react-icons/fa";
 import { AiOutlineCheck } from "react-icons/ai";
 
-const TodoItem = ({ todo, handleCheck, handleDelete }) => {
+type Props = {
+  todo: Todo.Schema;
+  handleCheck: (id: number) => void;
+  handleDelete: (id: number) => void;
+}
+
+const TodoItem = ({ todo, handleCheck, handleDelete }: Props) => {
   const { id, title, description, is_completed } = todo;
   const router = useRouter();
   const actions = [
     {
       name: "check",
-      onClick: async (e) => {
+      onClick: async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         handleCheck(id);
@@ -18,7 +24,7 @@ const TodoItem = ({ todo, handleCheck, handleDelete }) => {
     },
     {
       name: "delete",
-      onClick: async (e) => {
+      onClick: async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         handleDelete(id);

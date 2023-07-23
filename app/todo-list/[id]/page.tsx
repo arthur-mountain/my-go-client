@@ -1,55 +1,41 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
+import { GETv1TodoById, POSTv1TodoCreate, PUTv1TodoUpdate } from "@/services/Todo";
 
 const TodoListPage = "/todo-list";
 
-function PageComponent({ params }) {
+type Props = {
+  params: any;
+}
+
+function PageComponent({ params }: Props) {
   const router = useRouter();
-  const [isEdit, setIsEdit] = useState(null);
-  const [stateTitle, setStateTitle] = useState("");
-  const [stateDesc, setStateDesc] = useState("");
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [stateTitle, setStateTitle] = useState<string>("");
+  const [stateDesc, setStateDesc] = useState<string>("");
 
   useEffect(() => {
-    const fetchTodo = async (id) => {
-      if (!id) return;
-
-      const url = `${process.env.NEXT_PUBLIC_BASE_URL}/todos/${id}`
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
-        }
-      });
-      const todo = await res.json();
-      setStateTitle(todo.items.title);
-      setStateDesc(todo.items.description);
-    };
-
     const id = Number(params.id);
+    if (id) {
+      GETv1TodoById(id);
+    }
     setIsEdit(!!id);
-    fetchTodo(id);
   }, [])
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!stateTitle) return;
 
     try {
-      const url = isEdit ? `${process.env.NEXT_PUBLIC_BASE_URL}/todos/${params.id}` : `${process.env.NEXT_PUBLIC_BASE_URL}/todos/create`;
-      const method = isEdit ? "PUT" : "POST";
+      const data = JSON.stringify({ title: stateTitle, description: stateDesc, });
 
-      await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-        body: JSON.stringify({
-          title: stateTitle,
-          description: stateDesc,
-        })
-      });
+      if (isEdit) {
+        params.id && await PUTv1TodoUpdate(params.id, data);
+      } else {
+        await POSTv1TodoCreate(data);
+      }
 
       router.push(TodoListPage)
     } catch (error) {

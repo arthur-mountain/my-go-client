@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 const WhiteList = ["/", "/create-user", "/forget-password"];
 
 const initialStore = {
+  status: "loading",
   error: { message: "" }
 }
 const AuthContext = createContext(null);
@@ -23,8 +24,8 @@ const useClientAuth = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [stateErrMsg, setStateErrMsg] = useState('');
-  // const [store, dispatch] = useReducer(reducer, initialStore)
-  const isShowChildren = !stateErrMsg || WhiteList.indexOf(pathname) > -1;
+  const [store, dispatch] = useReducer(reducer, initialStore)
+  const isShowChildren = !store.error.message || WhiteList.indexOf(pathname) > -1;
 
   const handleLogout = () => {
     // TODO: api to logout?

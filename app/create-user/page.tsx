@@ -1,13 +1,13 @@
 'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { POSTv1CreateUser } from "../../services/System/index.js";
+import { POSTv1CreateUser } from "@/services/System/index.js";
 
 function PageComponent() {
   const router = useRouter();
-  const [username, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUserName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const isDisabled = !username && !password && !confirmPassword;
 
   const handleSubmit = async () => {

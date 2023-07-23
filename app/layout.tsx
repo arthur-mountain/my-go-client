@@ -1,8 +1,8 @@
-import Layout from "../components/Layout/Admin";
+import Layout from "@/components/Layout/Admin";
 import "@/styles/reset.css";
 import "@/styles/global.css";
 
-function RootLayout({ children }) {
+function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html>
       <head>

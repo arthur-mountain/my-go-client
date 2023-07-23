@@ -1,6 +1,4 @@
-'use client';
-
-function PageComponent() {
+async function PageComponent() {
   return (
     <div >
       welcome home page
