@@ -1,7 +1,8 @@
+import type { Route } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 
-const pages = [
+const pages: { title: string; href: Route; }[] = [
   { title: "TodoList", href: "/todo-list" },
   { title: "Activity", href: "/activity" },
 ];

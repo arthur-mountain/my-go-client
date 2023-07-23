@@ -1,23 +1,29 @@
-import { useEffect, useState, useReducer, useContext, createContext } from "react";
+import { useEffect, useMemo, useReducer, useContext, createContext } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { STATUS, WHITE_LIST } from "@/constants/common"
+import { AUTH_STATUS, WHITE_LIST } from "@/constants/common";
 
 export type AuthStore = {
-  status: STATUS;
+  status: AUTH_STATUS;
   error: Common.ErrorType;
 }
-
-export type AuthActions = {}
-
+export type AuthActions = {
+  handleLogout: () => Promise<void>;
+  handleSetError: (error: Common.ErrorType) => Promise<void>;
+  handleResetError: () => Promise<void>;
+}
 export enum AuthActionType {
-  CREATE_USER,
+  SET_ERROR,
+  RESET_ERROR,
 }
 
-type ReducerAction = { type: AuthActionType; payload?: any; };
-const reducer = (store: AuthStore, action: ReducerAction) => {
+type AuthReducerAction = { type: AuthActionType; payload?: any; };
+const reducer = (store: AuthStore, action: AuthReducerAction) => {
   switch (action.type) {
-    case AuthActionType.CREATE_USER: {
-      return { ...store }
+    case AuthActionType.SET_ERROR: {
+      return { ...store, error: action.payload.error }
+    }
+    case AuthActionType.RESET_ERROR: {
+      return { ...store, error: { message: "" } }
     }
     default:
       return store
@@ -25,56 +31,53 @@ const reducer = (store: AuthStore, action: ReducerAction) => {
 }
 
 const initialStore: AuthStore = {
-  status: STATUS.LOADING as STATUS,
-  error: { message: "" }
+  status: AUTH_STATUS.LOGOUT as AUTH_STATUS,
+  error: { message: "" },
 }
-const AuthContext = createContext(null);
-const useAuthCtx = () => useContext(AuthContext);
-const useClientAuth = () => {
+
+type AuthContextValue = { store: AuthStore, actions: AuthActions };
+export const AuthContext = createContext<AuthContextValue>(null!);
+export const useAuthCtx = () => useContext(AuthContext);
+const useClientAuth = (): AuthContextValue => {
   const router = useRouter();
   const pathname = usePathname();
-  const [stateErrMsg, setStateErrMsg] = useState('');
-  const [store, dispatch] = useReducer(reducer, initialStore)
-  const isShowChildren = !store.error.message || WHITE_LIST.indexOf(pathname) > -1;
-
-  const handleLogout = () => {
-    // TODO: api to logout?
-    window.localStorage.removeItem("token");
-    router.replace("/");
-  };
+  const [store, dispatch] = useReducer(reducer, initialStore);
+  const actions = useMemo<AuthActions>(() => ({
+    handleLogout: async () => {
+      // TODO: api to logout?
+      window.localStorage.removeItem("token");
+    },
+    handleSetError: async (error: Common.ErrorType) => {
+      dispatch({ type: AuthActionType.SET_ERROR, payload: { error } })
+    },
+    handleResetError: async () => {
+      dispatch({ type: AuthActionType.RESET_ERROR })
+    },
+  }), [])
 
   useEffect(() => {
     const isWhiteList = WHITE_LIST.indexOf(pathname) > -1;
     const token = JSON.parse(window.localStorage.getItem("token") as string);
-
     // Login page has token
     if (pathname === '/' && token) {
-      setStateErrMsg("");
+      actions.handleSetError({ message: "" });
       router.replace("/home");
       return;
     }
 
-    // White list page without token
-    if (isWhiteList) return;
-
+    // Should login first
     if (!isWhiteList && !token) {
-      setStateErrMsg("empty token");
-      setTimeout(() => {
-        setStateErrMsg("");
+      actions.handleSetError({ message: "empty token" });
+      const timer = setTimeout(() => {
+        clearTimeout(timer);
+        actions.handleSetError({ message: "" });
         router.replace("/");
       }, 1000);
+      return;
     };
-  }, [pathname]);
+  }, [pathname])
 
-  return {
-    store: {
-      stateErrMsg,
-      isShowChildren
-    },
-    action: {
-      handleLogout
-    },
-  }
+  return { store, actions };
 };
 
 export default useClientAuth;

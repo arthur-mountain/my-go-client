@@ -2,8 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/Buttons/Button";
 
-const LayoutHeader = ({ handleLogout }) => {
+type Props = {
+  handleLogout: () => Promise<void>;
+}
 
+const LayoutHeader = ({ handleLogout }: Props) => {
   return (
     <header>
       <nav className="bg-white border-gray-200 dark:bg-gray-900">

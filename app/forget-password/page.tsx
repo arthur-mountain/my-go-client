@@ -1,7 +1,7 @@
 'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { POSTv1ForgetPassword } from "@/services/System/index.js";
+import { POSTv1ForgetPassword } from "@/services/System";
 
 function PageComponent() {
   const router = useRouter();

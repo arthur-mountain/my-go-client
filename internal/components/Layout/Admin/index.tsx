@@ -2,16 +2,19 @@
 import { useSelectedLayoutSegments } from "next/navigation";
 import useClientAuth from "@/hooks/useClientAuth";
 import Breadcrumb from "@/components/Breadcrumb";
+// import { AUTH_STATUS, WHITE_LIST } from "@/constants/common";
 
-import AdminHeaderLayout from "./AdminHeader"
-import AdminSidebarLayout from "./AdminSidebar"
-import AdminFooterLayout from "./AdminFooter"
+import AdminHeaderLayout from "./AdminHeader";
+import AdminSidebarLayout from "./AdminSidebar";
+import AdminFooterLayout from "./AdminFooter";
 
-function AdminLayout({ children }) {
+type Props = React.PropsWithChildren;
+
+function AdminLayout({ children }: Props) {
   const breadcrumbs = useSelectedLayoutSegments()
   const {
-    store: { isShowChildren, stateErrMsg },
-    action: { handleLogout }
+    store: { error },
+    actions: { handleLogout },
   } = useClientAuth();
 
   return (
@@ -25,9 +28,9 @@ function AdminLayout({ children }) {
 
           <main className="p-6 pb-96 text-white">
             <div className="text-red-900 text-center text-7xl mb-12">
-              {stateErrMsg}
+              {error.message}
             </div>
-            {isShowChildren && children}
+            {!error.message && children}
           </main>
 
           <AdminFooterLayout />

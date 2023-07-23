@@ -1,4 +1,13 @@
 export const WHITE_LIST = ["/", "/create-user", "/forget-password"];
+
+// AUTH STATUS
+export const AUTH_STATUS = {
+  LOGIN: "LOGIN",
+  LOGOUT: "LOGOUT",
+}
+export type AUTH_STATUS = keyof typeof AUTH_STATUS;
+
+// API STATUS
 export const STATUS = {
   LOADING: "LOADING",
   INIT: "INIT",
