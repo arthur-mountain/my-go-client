@@ -2,12 +2,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthCtx } from "@/hooks/useClientAuth";
+import useClientSwr from "@/hooks/useClientSwr";
 
 function PageComponent() {
   const router = useRouter();
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { actions: { handleLogin: login } } = useAuthCtx();
+  const data = useClientSwr()
+  console.log(`🚀 ~ PageComponent ~ data:`, data);
 
   const handleLogin = async (e: React.MouseEvent) => {
     e.preventDefault();
