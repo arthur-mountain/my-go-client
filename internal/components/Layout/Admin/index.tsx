@@ -1,6 +1,6 @@
 'use client';
 import { useSelectedLayoutSegments } from "next/navigation";
-import useClientAuth from "@/hooks/useClientAuth";
+import useClientAuth, { AuthContext } from "@/hooks/useClientAuth";
 import Breadcrumb from "@/components/Breadcrumb";
 // import { AUTH_STATUS, WHITE_LIST } from "@/constants/common";
 
@@ -12,10 +12,9 @@ type Props = React.PropsWithChildren;
 
 function AdminLayout({ children }: Props) {
   const breadcrumbs = useSelectedLayoutSegments()
-  const {
-    store: { error },
-    actions: { handleLogout },
-  } = useClientAuth();
+  const { store, actions } = useClientAuth();
+  const { error } = store;
+  const { handleLogout } = actions;
 
   return (
     <>
@@ -30,7 +29,11 @@ function AdminLayout({ children }: Props) {
             <div className="text-red-900 text-center text-7xl mb-12">
               {error.message}
             </div>
-            {!error.message && children}
+            {!error.message && (
+              <AuthContext.Provider value={{ store, actions }}>
+                {children}
+              </AuthContext.Provider>
+            )}
           </main>
 
           <AdminFooterLayout />

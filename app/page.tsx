@@ -1,27 +1,18 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { POSTv1Login } from "@/services/System";
+import { useAuthCtx } from "@/hooks/useClientAuth";
 
 function PageComponent() {
   const router = useRouter();
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { actions: { handleLogin: login } } = useAuthCtx();
 
   const handleLogin = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    try {
-      const resp = await POSTv1Login({ email: username, password });
-
-      if (resp.items.token) {
-        localStorage.setItem("token", JSON.stringify(resp.items.token));
-        router.push("/home");
-      }
-    } catch (error) {
-      alert(error);
-    }
+    login({ email: username, password });
   };
   const handleCreate = () => router.push("/create-user");
   const handleForgetPwd = () => router.push("/forget-password");
