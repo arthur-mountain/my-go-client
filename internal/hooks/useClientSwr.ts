@@ -1,31 +1,53 @@
 import useSWR from 'swr';
 
-type Props = { path?: string };
-
-const fetcher = (path: string = '', options: any = {}) => {
-  // TODO: swr fetcher
-  return (
-    fetch(path, options)
-      .then(r => r.json().then(data => r.ok ? data : Promise.reject(data)))
-  )
+export type ClientSwrProps = {
+  path: string;
+  options?: RequestInit;
 };
-const useClientSwr = ({
-  path = 'https://jsonplaceholder.typicode.com/todos'
-}: Props = {}) => {
-  const { data, error, isLoading } = useSWR(path, fetcher);
 
-  // TODO: Encapsulation error that should be returned, like {code: , message:''}
-  if (error) {
-    console.log(`🚀 ~ error:`, error);
+export type ClientSwrErrorType = {
+  statusCode: number;
+  message: string;
+  data: any
+  config: {
+    type: string;
+    url: string;
+    headers: Headers;
   }
+}
 
-  // TODO: UseRef directly add dom for global cover loading or part of container loading?
-  if (isLoading) {
-    console.log(`🚀 ~ isLoading:`, isLoading);
+const fetcher = async ([path, options]: [path: string, options?: RequestInit]) => {
+  // TODO: swr fetcher
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_DOMAIN}/${path}`, options);
+
+    if (response.ok) {
+      return await response.json();
+    }
+
+    return Promise.reject({
+      statusCode: response.status,
+      message: response.statusText,
+      data: await response.json(),
+      config: {
+        type: response.type,
+        url: response.url,
+        headers: response.headers,
+      }
+    } as ClientSwrErrorType)
+  } catch (error) {
+    // TODO: handle 500 error,etc...
+    console.log(error);
   }
+};
 
-  // TODO: Finally return the data, also could be encapsulation the result
-  return data
+export const swrPreloadData = () => { }
+
+const useClientSwr = <T>({ path, options }: ClientSwrProps = { path: "todos" }) => {
+  return useSWR<T, ClientSwrErrorType>(
+    options ? [path, options] : [path],
+    fetcher
+  );
 };
 
 export default useClientSwr;

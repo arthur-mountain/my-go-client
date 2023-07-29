@@ -2,14 +2,14 @@
 import { useSelectedLayoutSegments } from "next/navigation";
 import useClientAuth, { AuthContext } from "@/hooks/useClientAuth";
 import Breadcrumb from "@/components/Breadcrumb";
-// import { AUTH_STATUS, WHITE_LIST } from "@/constants/common";
 
-import AdminHeaderLayout from "./AdminHeader";
+import AdminNavbarLayout from "./AdminHeader";
 import AdminSidebarLayout from "./AdminSidebar";
 import AdminFooterLayout from "./AdminFooter";
 
 type Props = React.PropsWithChildren;
 
+const headerHeight = '70px'
 function AdminLayout({ children }: Props) {
   const breadcrumbs = useSelectedLayoutSegments()
   const { store, actions } = useClientAuth();
@@ -18,18 +18,21 @@ function AdminLayout({ children }: Props) {
 
   return (
     <>
-      <AdminHeaderLayout handleLogout={handleLogout} />
-      <section className="flex">
+      <header className={`h-[${headerHeight}]`}>
+        <AdminNavbarLayout handleLogout={handleLogout} />
+      </header>
+      <section className={`flex min-h-[calc(100vh-${headerHeight})]`}>
         <AdminSidebarLayout />
 
-        <section className="grow bg-black">
+        <section className="grow flex flex-col">
           <Breadcrumb breadcrumbs={["home", ...breadcrumbs]} />
 
-          <main className="p-6 pb-96 text-white">
-            <div className="text-red-900 text-center text-7xl mb-12">
-              {error.message}
-            </div>
-            {!error.message && (
+          <main className="grow p-6 text-white">
+            {error.message ? (
+              <div className="text-red-900 text-center text-7xl mb-12">
+                {error.message}
+              </div>
+            ) : (
               <AuthContext.Provider value={{ store, actions }}>
                 {children}
               </AuthContext.Provider>
