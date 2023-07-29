@@ -8,14 +8,14 @@ function PageComponent() {
   const router = useRouter();
   const [username, setUserName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { actions: { handleLogin: login } } = useAuthCtx();
+  const { actions } = useAuthCtx();
   const data = useClientSwr()
   console.log(`🚀 ~ PageComponent ~ data:`, data);
 
   const handleLogin = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    login({ email: username, password });
+    actions.handleLogin({ email: username, password });
   };
   const handleCreate = () => router.push("/create-user");
   const handleForgetPwd = () => router.push("/forget-password");
