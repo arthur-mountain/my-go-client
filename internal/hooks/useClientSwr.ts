@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { preload } from 'swr';
 
 export type ClientSwrProps = {
   path: string;
@@ -16,7 +16,8 @@ export type ClientSwrErrorType = {
   }
 }
 
-const fetcher = async ([path, options]: [path: string, options?: RequestInit]) => {
+type FetcherParams = [path: string, options?: RequestInit]
+const fetcher = async ([path, options]: FetcherParams) => {
   // TODO: swr fetcher
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_DOMAIN}/${path}`, options);
@@ -41,7 +42,7 @@ const fetcher = async ([path, options]: [path: string, options?: RequestInit]) =
   }
 };
 
-export const swrPreloadData = () => { }
+export const swrPreloadData = <T>(key: FetcherParams) => preload<T, FetcherParams, typeof fetcher>(key, fetcher)
 
 const useClientSwr = <T>({ path, options }: ClientSwrProps = { path: "todos" }) => {
   return useSWR<T, ClientSwrErrorType>(
